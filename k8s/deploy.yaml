@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sk032-stock-backend
+  namespace: skala-practice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sk032-stock-backend
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8081'
+        prometheus.io/path: '/actuator/prometheus'
+        update: 1ae2adf933c27354a572ce4c738d013f
+      labels:
+        app: sk032-stock-backend
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: sk032-stock-backend
+          image: amdp-registry.skala-ai.com/skala25a/sk032-stock-backend:1.0.0
+          imagePullPolicy: Always
+          env:
+            - name: USER_NAME
+              value: sk032
+            - name: NAMESPACE
+              value: skala-practice
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
